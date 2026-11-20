@@ -62,7 +62,7 @@ with tempfile.TemporaryDirectory(prefix='register-span-catalog-') as temp:
     if len(sys.argv)>=5:
         compile_source=root/'registry-compile';compile_source.mkdir()
         (compile_source/'registry.c').write_text('#include "native_register_span_registry.h"\nint registry_is_valid(void){return 1;}\n')
-        core=Path(__file__).resolve().parents[2]/'external/m68k-recomp-core/runtime'
+        core=Path(__file__).resolve().parents[2]/'external/segagenesisrecomp/external/m68k-recomp-core/runtime'
         (compile_source/'CMakeLists.txt').write_text('cmake_minimum_required(VERSION 3.16)\nproject(RegistryContract C)\nadd_library(registry OBJECT registry.c)\ntarget_include_directories(registry PRIVATE "'+core.as_posix()+'" "'+rmw_output.as_posix()+'")\n')
         subprocess.run([sys.argv[3],'-S',str(compile_source),'-B',str(root/'registry-build'),'-G',sys.argv[4]],check=True)
         subprocess.run([sys.argv[3],'--build',str(root/'registry-build'),'--config','Release','--parallel','1'],check=True)
@@ -82,7 +82,10 @@ int main(void){M68kStepContext c={0};c.bus.fetch16=fetch;c.code_span=view;c.stat
             file.write('add_executable(flow\n'+''.join(' "'+p.as_posix()+'"\n' for p in sources)+')\ntarget_include_directories(flow PRIVATE "'+core.as_posix()+'" "'+output.as_posix()+'" "'+original.as_posix()+'")\n')
         subprocess.run([sys.argv[3],'-S',str(compile_source),'-B',str(root/'registry-build')],check=True)
         subprocess.run([sys.argv[3],'--build',str(root/'registry-build'),'--config','Release','--target','flow','--parallel','1'],check=True)
-        flow_executable=root/'registry-build'/('Release/flow.exe' if sys.platform=='win32' else 'flow')
+        flow_name='flow.exe' if sys.platform=='win32' else 'flow'
+        flow_executable=root/'registry-build'/flow_name
+        if not flow_executable.is_file():
+            flow_executable=flow_executable.parent/'Release'/flow_name
         subprocess.run([str(flow_executable)],check=True)
     array,index,original,replacement=rmw_manifest['canonical_owned_rmw_redirects'][0]
     assert original=='rmw_at_000000' and index==0
