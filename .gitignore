@@ -1,0 +1,8 @@
+/build*/
+__pycache__/
+*.pyc
+*.brm
+*.sgcd
+*.cue
+*.iso
+*.chd
