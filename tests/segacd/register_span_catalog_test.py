@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
-sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'tools'))
+sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'external/segagenesisrecomp/tools'))
 import native_catalog_compact as compact
 import native_register_spans as spans
 
