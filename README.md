@@ -1,20 +1,38 @@
 # segacdrecomp
 
-The Sega CD engine owns the main and sub-68000 timeline, CD drive and controller,
-PCM and CD audio, stamp graphics, DMA, disc images, backup RAM and native catalog
-support. It uses the Genesis bus, VDP, audio and host code from a pinned
-`external/segagenesisrecomp` checkout. The Genesis pin also selects the shared
-M68K and Z80 cores. Sega CD is compiled from this repository's `runner/cd`.
+`segacdrecomp` is a shared engine for native recompilation of Sega CD games.
+It coordinates the main and sub 68000 CPUs and implements the CD drive and
+controller, CD audio and PCM, stamp graphics, DMA, disc images and backup RAM.
+It builds as libraries and host tools that a game repository can pin as a Git
+submodule.
 
-Sonic CD is a separate consumer. Its repository owns the game catalog recipe,
-media verification, rendering, loading service, launcher and packaging. The
-engine accepts the consumer's `SEGACD_GAME_TARGET` and `SEGACD_GAME_SOURCES` for
-the strict native SDL build. The `segacd::devices`, `segacd::disc_image` and
-`segacd::machine` CMake targets can be used without the game or its media.
+## Sonic CD
 
-## Build and test
+[SonicCDRecomp](https://github.com/mstan/SonicCDRecomp) is the first consumer.
+Its [standalone engine build guide](https://github.com/mstan/SonicCDRecomp/blob/codex/segacdrecomp-migration/docs/BUILDING.md)
+shows how to generate native catalogs from an owned BIOS and disc image and
+build the playable game. The game repository supplies the input checks, catalog
+recipe, title-specific rendering and loading code, launcher and packaging.
+BIOS images, game media and generated catalogs stay in local build directories.
+
+## Dependencies
+
+- [segagenesisrecomp](https://github.com/mstan/segagenesisrecomp) provides the
+  shared Genesis bus, VDP, audio and host code. Its submodule pins select the
+  [68000 core](https://github.com/mstan/m68k-recomp-core) and
+  [Z80 core](https://github.com/mstan/z80-recomp-core).
+- The engine builds with CMake 3.21+ and a C11 compiler. The host catalog tools
+  and Python tests use Python 3.10+.
+- A native SDL runner also uses a C++17 compiler, [SDL2](https://github.com/libsdl-org/SDL)
+  and a pinned [recomp-ui](https://github.com/mstan/recomp-ui) runtime. Sonic CD
+  pins the [Z80 generation frontend](https://github.com/mstan/smsggrecomp)
+  alongside the engine.
+
+## Build and use
 
 ```sh
+git clone https://github.com/mstan/segacdrecomp.git
+cd segacdrecomp
 git submodule update --init external/segagenesisrecomp
 git -C external/segagenesisrecomp submodule update --init external/m68k-recomp-core external/z80-recomp-core
 cmake -S . -B build
@@ -22,11 +40,12 @@ cmake --build build --config Release --parallel 4
 ctest --test-dir build -C Release --output-on-failure --timeout 0
 ```
 
-Synthetic tests use C11 and Python 3. The game also needs C++17 and SDL2. With
-`BUILD_TESTING=OFF`, `SEGACD_BUILD_TOOLS=ON` retains the host generators and BIOS
-discovery probe. The probe is separate from the strict native runner. Follow the
-consumer's build instructions to generate catalogs from owned media.
+Consumers can link `segacd::devices`, `segacd::disc_image` and `segacd::machine`
+through CMake. To build a title's native SDL executable, the consumer sets
+`SEGACD_GAME_TARGET` and `SEGACD_GAME_SOURCES` and supplies the generated
+catalogs. `SEGACD_BUILD_TOOLS` makes the host generators and BIOS discovery
+probe available independently. The probe runs the original program for catalog
+discovery. The game executes the compiled native catalogs.
 
-The first standalone revision uses the qualified Genesis pin from the Sonic CD
-0.0.5 build. The shared [license](LICENSE.md), recompiler [license](LICENSE-recompiler),
-and [ares notice](runner/cd/ARES-LICENSE.txt) accompany the extracted code.
+The shared [license](LICENSE.md), [recompiler license](LICENSE-recompiler) and
+[ares notice](runner/cd/ARES-LICENSE.txt) accompany the extracted code.
