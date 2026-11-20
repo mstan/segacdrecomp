@@ -9,7 +9,7 @@ submodule.
 ## Sonic CD
 
 [SonicCDRecomp](https://github.com/mstan/SonicCDRecomp) is the first consumer.
-Its [standalone engine build guide](https://github.com/mstan/SonicCDRecomp/blob/codex/segacdrecomp-migration/docs/BUILDING.md)
+Its [standalone engine build guide](https://github.com/mstan/SonicCDRecomp/blob/main/docs/BUILDING.md)
 shows how to generate native catalogs from an owned BIOS and disc image and
 build the playable game. The game repository supplies the input checks, catalog
 recipe, title-specific rendering and loading code, launcher and packaging.
