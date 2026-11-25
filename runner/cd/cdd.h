@@ -4,8 +4,10 @@
 #ifndef SEGACD_CDD_H
 #define SEGACD_CDD_H
 #include <stdint.h>
-typedef struct {int32_t index00,start,end;uint8_t data;} SegaCDTrack;
-typedef struct {SegaCDTrack track[99];unsigned count;int32_t leadout;} SegaCDTOC;
+#include <recomp_image/sector_toc.h>
+typedef RecompImageTrack SegaCDTrack;
+typedef RecompImageTOC SegaCDTOC;
+
 typedef struct {
     SegaCDTOC toc;
     uint8_t tx[10],rx[10],pending[10];
