@@ -1,3 +1,6 @@
 [submodule "external/segagenesisrecomp"]
 	path = external/segagenesisrecomp
 	url = https://github.com/mstan/segagenesisrecomp.git
+[submodule "external/recomp-image-core"]
+	path = external/recomp-image-core
+	url = https://github.com/mstan/recomp-image-core-candidate-20261124.git
