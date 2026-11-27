@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
-project(segacdrecomp LANGUAGES C)
+project(segacdrecomp LANGUAGES C CXX)
 
 set(RECOMP_SHARED_CORE_ROOT "" CACHE PATH "Optional shared core checkout root")
-if(RECOMP_SHARED_CORE_ROOT)
+if(RECOMP_SHARED_CORE_ROOT AND
+   EXISTS "${RECOMP_SHARED_CORE_ROOT}/recomp-image-core/CMakeLists.txt")
   set(_segacd_image_root "${RECOMP_SHARED_CORE_ROOT}/recomp-image-core")
 else()
   set(_segacd_image_root "${CMAKE_CURRENT_SOURCE_DIR}/external/recomp-image-core")
