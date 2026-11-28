@@ -49,3 +49,17 @@ discovery. The game executes the compiled native catalogs.
 
 The shared [license](LICENSE.md), [recompiler license](LICENSE-recompiler) and
 [ares notice](runner/cd/ARES-LICENSE.txt) accompany the extracted code.
+
+## Release tools
+
+`tools/segacd/stage_release_runtime.ps1 -StageDir PATH [-RuntimeDir PATH]`
+uses the pinned Genesis release provider to copy and verify the transitive
+Windows DLL closure. Every staged executable and DLL must be x64. Runtime
+lookup is limited to the stage and the caller's approved redistributable
+directory. Consumers retain their payload allowlists, license/provenance
+checks, native-save policy and archive layout.
+
+Linux consumers can source
+`external/segagenesisrecomp/tools/release/appimage.sh` for verified pinned
+tool acquisition. A consumer with a separately qualified AppImage runtime
+retains its explicit runtime selection and corresponding license checks.
